@@ -25,6 +25,9 @@ main{max-width:1120px;margin:auto;padding:20px 15px 100px}
 .section h2{font-size:1.45rem;color:var(--orange);margin:0 0 12px;border-bottom:1px solid var(--line);padding-bottom:8px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
 .product{background:linear-gradient(145deg,#1b1511,#100d0b);border:1px solid #3c2b1c;border-radius:15px;padding:14px;display:flex;flex-direction:column;min-height:155px;box-shadow:0 7px 18px #0003}
+
+.product-image{width:100%;height:132px;object-fit:cover;border-radius:10px;margin:0 0 12px;display:block;background:#2a211a}
+@media(max-width:700px){.product-image{height:112px}}
 .product h3{font-size:1rem;margin:0 0 5px;color:#fff}
 .product p{font-size:.82rem;color:var(--muted);margin:0 0 12px;line-height:1.4;flex:1}
 .price{font-weight:800;color:var(--gold);font-size:1.1rem;margin-bottom:10px}
@@ -99,23 +102,28 @@ textarea{min-height:75px;resize:vertical}
 </main>
 <button class="float-cart" onclick="document.getElementById('pedido').scrollIntoView({behavior:'smooth'})">🛒 Ver carrinho · <span id="floatTotal">R$ 0,00</span></button>
 <footer class="foot">Sushi Gastro Morretes · Pedidos online pelo WhatsApp<br>(41) 99763-6244</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const phone='5541997636244';
+const SUPABASE_URL='https://zjrbdmpqkitgaxzkzvkd.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_zirINi5lraWKZOgxP6dgIw_o6D541-v';
+const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 const catalog=[
 ['Entradas',[['Bolinho de Salmão','Porção',26.90]]],
-['Hossomakis',[['Pepino','8 peças',19.90],['Pepino','12 peças',27.90],['Salmão','8 peças',19.90],['Salmão','12 peças',27.90],['Kani','8 peças',19.90],['Kani','12 peças',27.90],['Peixe Branco','8 peças',19.90],['Peixe Branco','12 peças',27.90],['Skin','8 peças',19.90],['Skin','12 peças',27.90],['Patê de Salmão','8 peças',19.90],['Patê de Salmão','12 peças',27.90]]],
-['Sashimis',[['Salmão','5 peças',22.90],['Salmão','10 peças',44.90],['Peixe Branco','5 peças',19.90],['Peixe Branco','10 peças',42.90]]],
+['Hossomakis',[['Pepino','8 peças',19.90],['Pepino','12 peças',27.90],['Salmão','8 peças',19.90],['Salmão','12 peças',27.90],['Kani','8 peças',19.90],['Kani','12 peças',27.90],['Skin','8 peças',19.90],['Skin','12 peças',27.90],['Patê de Salmão','8 peças',19.90],['Patê de Salmão','12 peças',27.90]]],
+['Sashimis',[['Salmão','5 peças',22.90],['Salmão','10 peças',44.90],]],
 ['Uramakis',[['Filadélfia','8 peças',26.90],['Filadélfia','12 peças',39.90],['Califórnia','8 peças',26.90],['Califórnia','12 peças',39.90],['Romeu e Julieta','8 peças',26.90],['Romeu e Julieta','12 peças',39.90],['Skin','8 peças',26.90],['Skin','12 peças',39.90],['Salmão Grelhado','8 peças',26.90],['Salmão Grelhado','12 peças',39.90]]],
 ['Joy',[['Salmão','4 peças',20.90],['Salmão','8 peças',37.90],['Doce','8 peças',16.90]]],
-['Niguiris',[['Salmão','4 peças',16.90],['Salmão','8 peças',29.90],['Peixe Branco','4 peças',16.90],['Peixe Branco','8 peças',29.90],['Skin','4 peças',16.90],['Skin','8 peças',29.90],['Kani','4 peças',16.90],['Kani','8 peças',29.90]]],
+['Niguiris',[['Salmão','4 peças',16.90],['Salmão','8 peças',29.90],['Skin','4 peças',16.90],['Skin','8 peças',29.90],['Kani','4 peças',16.90],['Kani','8 peças',29.90]]],
 ['Uramaki Especial',[['Uramaki Especial','8 peças',34.90],['Uramaki Especial','12 peças',49.90]]],
 ['Hot Holls',[['Filadélfia','8 peças',22.90],['Filadélfia','12 peças',31.90],['Banana','8 peças',22.90],['Banana','12 peças',31.90],['Goiabada','8 peças',22.90],['Goiabada','12 peças',31.90],['Big Hot','Porção',39.90]]],
-['Temakis',[['Temaki Médio - Salmão','1 unidade',29.90],['Temaki Médio - Salmão Filadélfia','1 unidade',29.90],['Temaki Médio - Califórnia','1 unidade',29.90],['Temaki Médio - Peixe Branco','1 unidade',29.90],['Temaki Médio - Skin Filadélfia','1 unidade',29.90],['Temaki Médio - Salmão Grelhado','1 unidade',29.90],['Temaki Hot','1 unidade',39.90]]],
+['Temakis',[['Temaki Médio - Salmão','1 unidade',29.90],['Temaki Médio - Salmão Filadélfia','1 unidade',29.90],['Temaki Médio - Califórnia','1 unidade',29.90],['Temaki Médio - Skin Filadélfia','1 unidade',29.90],['Temaki Médio - Salmão Grelhado','1 unidade',29.90],['Temaki Hot','1 unidade',39.90]]],
 ['Duplinhas',[['Temaki + Uramaki','Combo',49.90],['Temaki + Hot','Combo',49.90],['Temaki + Bolinho','Combo',49.90],['Uramaki + Hot','Combo',47.90]]],
 ['Combinados Promoção',[['Combinado','12 peças · 4 uramaki, 4 hossomaki, 2 niguiris e 2 joy',48.00],['Combinado','24 peças · 4 sashimis, 8 uramaki, 8 hossomaki, 2 niguiris e 2 joy',89.90],['Combinado','32 peças · 4 sashimis, 8 uramaki, 8 hossomaki, 2 niguiris, 2 joy e 8 hot',99.00],['Combinado','50 peças · composição conforme cardápio',65.00]]],
 ['Pokes',[['Poke de Salmão','Manga, kani, pepino, arroz e cebola roxa',37.90],['Poke Filadélfia','Manga, kani, pepino, arroz e cebola roxa',37.90]]],
 ['Yakisoba',[['Yakisoba de Carne','Porção',35.00],['Yakisoba de Frango','Porção',35.00]]]
-];
+ ];
+const categoryImages = {"Entradas": "https://images.unsplash.com/photo-1764183122524-974ccfb709fd?auto=format&fit=crop&fm=jpg&q=80&w=900", "Hossomakis": "https://images.unsplash.com/photo-1774635804786-5ebb8f88dcdf?auto=format&fit=crop&fm=jpg&q=80&w=900", "Sashimis": "https://images.unsplash.com/photo-1758384075930-6e3835d22b1d?auto=format&fit=crop&fm=jpg&q=80&w=900", "Uramakis": "https://images.unsplash.com/photo-1774635804786-5ebb8f88dcdf?auto=format&fit=crop&fm=jpg&q=80&w=900", "Joy": "https://images.unsplash.com/photo-1774635804786-5ebb8f88dcdf?auto=format&fit=crop&fm=jpg&q=80&w=900", "Niguiris": "https://images.unsplash.com/photo-1774635804786-5ebb8f88dcdf?auto=format&fit=crop&fm=jpg&q=80&w=900", "Uramaki Especial": "https://images.unsplash.com/photo-1764183122524-974ccfb709fd?auto=format&fit=crop&fm=jpg&q=80&w=900", "Hot Holls": "https://images.unsplash.com/photo-1764183122524-974ccfb709fd?auto=format&fit=crop&fm=jpg&q=80&w=900", "Temakis": "https://images.unsplash.com/photo-1774635804786-5ebb8f88dcdf?auto=format&fit=crop&fm=jpg&q=80&w=900", "Duplinhas": "https://images.unsplash.com/photo-1764183122524-974ccfb709fd?auto=format&fit=crop&fm=jpg&q=80&w=900", "Combinados Promoção": "https://images.unsplash.com/photo-1764183122524-974ccfb709fd?auto=format&fit=crop&fm=jpg&q=80&w=900", "Pokes": "https://images.unsplash.com/photo-1768326119213-e0ad875083a3?auto=format&fit=crop&fm=jpg&q=80&w=900", "Yakisoba": "https://images.unsplash.com/photo-1704253514532-7d9781b39b45?auto=format&fit=crop&fm=jpg&q=80&w=900"};
 const cart={};
 const money=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const slug=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-');
@@ -128,11 +136,12 @@ catalog.forEach(([category,items])=>{
  items.forEach(([name,detail,price])=>{
   const key=category+'|'+name+'|'+detail;
   const card=document.createElement('article');card.className='product';card.dataset.search=(category+' '+name+' '+detail).toLowerCase();
+  const photo=document.createElement('img');photo.className='product-image';photo.src=categoryImages[category];photo.alt=category+' - foto ilustrativa';photo.loading='lazy';photo.onerror=()=>{photo.style.display='none'};
   const title=document.createElement('h3');title.textContent=name;
   const desc=document.createElement('p');desc.textContent=detail;
   const p=document.createElement('div');p.className='price';p.textContent=money(price);
   const btn=document.createElement('button');btn.className='add';btn.textContent='＋ Adicionar';btn.onclick=()=>add(key,name,detail,price,category);
-  card.append(title,desc,p,btn);grid.appendChild(card);
+  card.append(photo,title,desc,p,btn);grid.appendChild(card);
  });
  section.appendChild(grid);menu.appendChild(section);
 });
@@ -154,19 +163,45 @@ function renderCart(){
  document.getElementById('count').textContent=count;document.getElementById('subtotal').textContent=money(total);document.getElementById('total').textContent=money(total);document.getElementById('floatTotal').textContent=money(total);
 }
 document.getElementById('search').addEventListener('input',e=>{const q=e.target.value.toLowerCase().trim();document.querySelectorAll('.product').forEach(p=>p.style.display=p.dataset.search.includes(q)?'flex':'none');document.querySelectorAll('.section').forEach(s=>{s.style.display=[...s.querySelectorAll('.product')].some(p=>p.style.display!=='none')?'block':'none'})});
-document.getElementById('checkout').addEventListener('submit',e=>{
- e.preventDefault();const items=Object.values(cart);if(!items.length){alert('Adicione pelo menos um produto ao carrinho.');return}
- const nome=document.getElementById('nome').value.trim(),telefone=document.getElementById('telefone').value.trim(),endereco=document.getElementById('endereco').value.trim();
- const pagamento=document.querySelector('input[name="pagamento"]:checked')?.value;if(!pagamento){alert('Selecione a forma de pagamento.');return}
+document.getElementById('checkout').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const form=e.currentTarget;
+ const sendButton=form.querySelector('button[type="submit"]');
+ if(sendButton.disabled)return;
+ const items=Object.values(cart);
+ if(!items.length){alert('Adicione pelo menos um produto ao carrinho.');return}
+ const nome=document.getElementById('nome').value.trim();
+ const telefone=document.getElementById('telefone').value.trim();
+ const endereco=document.getElementById('endereco').value.trim();
+ const pagamento=document.querySelector('input[name="pagamento"]:checked')?.value;
+ if(!pagamento){alert('Selecione a forma de pagamento.');return}
  const subtotal=items.reduce((s,i)=>s+i.price*i.qty,0);
- let msg='🍣 *PEDIDO - SUSHI GASTRO MORRETES*\\n\\n';
- msg+='*Cliente:* '+nome+'\\n*Telefone:* '+telefone+'\\n*Endereço:* '+endereco+'\\n\\n*ITENS DO PEDIDO*\\n';
- items.forEach(i=>{msg+='• '+i.qty+'x '+i.name+' ('+i.detail+') - '+money(i.price*i.qty)+'\\n'});
- msg+='\\n*Subtotal:* '+money(subtotal)+'\\n*Frete:* Solicito cálculo para este endereço.\\n*Forma de pagamento:* '+pagamento+'\\n';
- const troco=document.getElementById('troco').value.trim(),obs=document.getElementById('obs').value.trim();
- if(troco)msg+='*Troco:* '+troco+'\\n';if(obs)msg+='*Observações:* '+obs+'\\n';
- msg+='\\nPor favor, informe o valor do frete e o total final para confirmar o pedido.';
- window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank');
+ const troco=document.getElementById('troco').value.trim();
+ const obs=document.getElementById('obs').value.trim();
+ const orderItems=items.map(i=>({name:i.name,detail:i.detail,price:i.price,category:i.category,qty:i.qty}));
+ let msg='🍣 *PEDIDO - SUSHI GASTRO MORRETES*\n\n';
+ msg+='*Cliente:* '+nome+'\n*Telefone:* '+telefone+'\n*Endereço:* '+endereco+'\n\n*ITENS DO PEDIDO*\n';
+ items.forEach(i=>{msg+='• '+i.qty+'x '+i.name+' ('+i.detail+') - '+money(i.price*i.qty)+'\n'});
+ msg+='\n*Subtotal:* '+money(subtotal)+'\n*Frete:* Solicito cálculo para este endereço.\n*Forma de pagamento:* '+pagamento+'\n';
+ if(troco)msg+='*Troco:* '+troco+'\n';
+ if(obs)msg+='*Observações:* '+obs+'\n';
+ msg+='\nPor favor, informe o valor do frete e o total final para confirmar o pedido.';
+ sendButton.disabled=true;
+ sendButton.textContent='Registrando pedido...';
+ try{
+  const {error}=await supabase.from('orders').insert({
+   customer_name:nome,customer_phone:telefone,delivery_address:endereco,
+   payment_method:pagamento,change_for:troco||null,notes:obs||null,
+   items:orderItems,subtotal:subtotal,delivery_fee:null
+  });
+  if(error)throw error;
+  window.location.href='https://wa.me/'+phone+'?text='+encodeURIComponent(msg);
+ }catch(error){
+  console.error('Erro ao registrar pedido:',error);
+  alert('Não foi possível registrar o pedido no sistema. Tente novamente ou fale diretamente pelo WhatsApp.');
+  sendButton.disabled=false;
+  sendButton.textContent='Enviar pedido e calcular frete pelo WhatsApp';
+ }
 });
 </script>
 </body>
