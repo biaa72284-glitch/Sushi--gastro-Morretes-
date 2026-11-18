@@ -24,10 +24,13 @@ main{max-width:1120px;margin:auto;padding:20px 15px 100px}
 .section{margin:22px 0 28px;scroll-margin-top:80px}
 .section h2{font-size:1.45rem;color:var(--orange);margin:0 0 12px;border-bottom:1px solid var(--line);padding-bottom:8px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
-.product{background:linear-gradient(145deg,#1b1511,#100d0b);border:1px solid #3c2b1c;border-radius:15px;padding:14px;display:flex;flex-direction:column;min-height:155px;box-shadow:0 7px 18px #0003}
-.product h3{font-size:1rem;margin:0 0 5px;color:#fff}
-.product p{font-size:.82rem;color:var(--muted);margin:0 0 12px;line-height:1.4;flex:1}
-.price{font-weight:800;color:var(--gold);font-size:1.1rem;margin-bottom:10px}
+.product{background:linear-gradient(145deg,#1b1511,#100d0b);border:1px solid #3c2b1c;border-radius:15px;padding:12px;display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;min-height:132px;box-shadow:0 7px 18px #0003}
+.product-info{display:flex;flex-direction:column;align-items:flex-start;min-width:0;flex:1}
+.product h3{font-size:1rem;margin:0 0 7px;color:#fff}
+.product p{display:none}
+.price{font-weight:800;color:var(--gold);font-size:1.1rem;margin:0 0 10px}
+.product-photo{width:104px;height:104px;flex:0 0 104px;object-fit:cover;border-radius:11px;border:1px solid #5b4028}
+@media(max-width:380px){.product{gap:8px;padding:10px}.product-photo{width:86px;height:86px;flex-basis:86px}.product h3{font-size:.9rem}}
 .add{border:0;background:var(--orange);color:#1a1006;border-radius:9px;padding:10px 12px;font-weight:800;cursor:pointer}
 .add:hover,.cart-top:hover,.send:hover{filter:brightness(1.1)}
 .cart-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-top:25px}
@@ -128,11 +131,28 @@ catalog.forEach(([category,items])=>{
  items.forEach(([name,detail,price])=>{
   const key=category+'|'+name+'|'+detail;
   const card=document.createElement('article');card.className='product';card.dataset.search=(category+' '+name+' '+detail).toLowerCase();
+  const info=document.createElement('div');info.className='product-info';
   const title=document.createElement('h3');title.textContent=name;
   const desc=document.createElement('p');desc.textContent=detail;
   const p=document.createElement('div');p.className='price';p.textContent=money(price);
   const btn=document.createElement('button');btn.className='add';btn.textContent='＋ Adicionar';btn.onclick=()=>add(key,name,detail,price,category);
-  card.append(title,desc,p,btn);grid.appendChild(card);
+  const photos={
+   'Entradas':'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=400&q=80',
+   'Hossomakis':'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?auto=format&fit=crop&w=400&q=80',
+   'Sashimis':'https://images.unsplash.com/photo-1534482421-64566f976cfa?auto=format&fit=crop&w=400&q=80',
+   'Uramakis':'https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=400&q=80',
+   'Joy':'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=400&q=80',
+   'Niguiris':'https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=400&q=80',
+   'Uramaki Especial':'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?auto=format&fit=crop&w=400&q=80',
+   'Hot Holls':'https://images.unsplash.com/photo-1583623025817-d180a2221d0a?auto=format&fit=crop&w=400&q=80',
+   'Temakis':'https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=400&q=80',
+   'Duplinhas':'https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=400&q=80',
+   'Combinados Promoção':'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=400&q=80',
+   'Pokes':'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80',
+   'Yakisoba':'https://images.unsplash.com/photo-1569718222165-3a8278d5f624?auto=format&fit=crop&w=400&q=80'
+  };
+  const photo=document.createElement('img');photo.className='product-photo';photo.src=photos[category]||photos['Uramakis'];photo.alt='Foto ilustrativa de '+name;photo.loading='lazy';
+  info.append(title,p,btn);card.append(info,photo,desc);grid.appendChild(card);
  });
  section.appendChild(grid);menu.appendChild(section);
 });
