@@ -151,7 +151,7 @@ catalog.forEach(([category,items])=>{
    'Pokes':'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80',
    'Yakisoba':'https://images.unsplash.com/photo-1569718222165-3a8278d5f624?auto=format&fit=crop&w=400&q=80'
   };
-  const photo=document.createElement('img');photo.className='product-photo';photo.src=photos[category]||photos['Uramakis'];photo.alt='Foto ilustrativa de '+name;photo.loading='lazy';
+  const photo=document.createElement('img');photo.className='product-photo';photo.src=(category==='Hossomakis'&&name==='Pepino')?'https://assets.dots.live/misteram-public/0188491f-2e19-730d-bb5f-a94c87471b63.png':(photos[category]||photos['Uramakis']);photo.alt=(category==='Hossomakis'&&name==='Pepino')?'Porção ilustrativa de hossomakis de pepino':'Foto ilustrativa de '+name;photo.loading='lazy';
   info.append(title,p,btn);card.append(info,photo,desc);grid.appendChild(card);
  });
  section.appendChild(grid);menu.appendChild(section);
