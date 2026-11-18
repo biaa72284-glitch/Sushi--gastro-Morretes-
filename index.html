@@ -137,19 +137,20 @@ catalog.forEach(([category,items])=>{
   const p=document.createElement('div');p.className='price';p.textContent=money(price);
   let goiabadaChoice='';
   let optionsBox=null;
-  if(category==='Hot Holls'&&name==='Goiabada'){
+  if((category==='Hot Holls'&&name==='Goiabada')||(category==='Pokes'&&(name==='Poke de Salmão'||name==='Poke Filadélfia'))){
    optionsBox=document.createElement('div');optionsBox.className='flavor-options';
    const optionsTitle=document.createElement('small');optionsTitle.textContent='Escolha uma opção:';
    optionsBox.appendChild(optionsTitle);
-   ['Goiabada com cream cheese','Goiabada com cream cheese e morango'].forEach((option,index)=>{
+   const choices=category==='Pokes'?['Com cream cheese','Sem cream cheese']:['Goiabada com cream cheese','Goiabada com cream cheese e morango'];
+   choices.forEach(option=>{
     const label=document.createElement('label');label.className='flavor-option';
-    const input=document.createElement('input');input.type='radio';input.name='goiabada-'+slug(detail);input.value=option;
+    const input=document.createElement('input');input.type='radio';input.name='choice-'+slug(category+'-'+name+'-'+detail);input.value=option;
     input.addEventListener('change',()=>{goiabadaChoice=option});
     label.append(input,document.createTextNode(' '+option));optionsBox.appendChild(label);
    });
   }
   const btn=document.createElement('button');btn.className='add';btn.textContent='＋ Adicionar';btn.onclick=()=>{
-   if(optionsBox&&!goiabadaChoice){alert('Escolha uma opção para o Hot Holl de Goiabada.');return;}
+   if(optionsBox&&!goiabadaChoice){alert(category==='Pokes'?'Escolha se deseja o Poke com ou sem cream cheese.':'Escolha uma opção para o Hot Holl de Goiabada.');return;}
    const selectedDetail=optionsBox?detail+' · '+goiabadaChoice:detail;
    const selectedKey=optionsBox?key+'|'+goiabadaChoice:key;
    add(selectedKey,name,selectedDetail,price,category);
