@@ -23,6 +23,7 @@ main{max-width:1120px;margin:auto;padding:20px 15px 100px}
 .categories a:hover{background:var(--orange);color:#160d04}
 .section{margin:22px 0 28px;scroll-margin-top:80px}
 .promotions{margin:22px 0 28px;scroll-margin-top:80px;background:linear-gradient(145deg,#21170f,#100d0b);border:1px solid #75430f;border-radius:16px;padding:16px;text-align:center}.promotions h2{font-size:1.45rem;color:var(--orange);margin:0 0 8px;border-bottom:1px solid var(--line);padding-bottom:8px;text-align:left}.promotions p{color:var(--muted);line-height:1.5;margin:8px 0 14px}.promotions img{display:block;width:100%;max-width:760px;height:auto;object-fit:contain;margin:0 auto;border-radius:12px;border:1px solid #5b4028}
+.promo-orders{margin-top:22px;text-align:left}.promo-orders h3{color:var(--gold);margin:0 0 8px}.promo-status{padding:11px 13px;border-radius:10px;background:#100d0b;border:1px solid var(--line);color:var(--muted);margin:12px 0}.promo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.promo-card{display:flex;gap:12px;align-items:center;background:#100d0b;border:1px solid #4a3523;border-radius:13px;padding:12px}.promo-card img{width:104px;height:104px;flex:0 0 104px;object-fit:cover;margin:0;border-radius:10px}.promo-card-info{min-width:0}.promo-card-info h4{margin:0 0 5px;color:#fff}.promo-card-info p{margin:0 0 7px;color:var(--muted);font-size:.85rem}.promo-price{display:block;color:var(--gold);font-size:1.1rem;font-weight:800;margin-bottom:9px}.promo-card button:disabled{background:#51483e;color:#c5b6a6;cursor:not-allowed;filter:none}.promo-closed{opacity:.72}
 .section h2{font-size:1.45rem;color:var(--orange);margin:0 0 12px;border-bottom:1px solid var(--line);padding-bottom:8px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
 .product{background:linear-gradient(145deg,#1b1511,#100d0b);border:1px solid #3c2b1c;border-radius:15px;padding:12px;display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;min-height:132px;box-shadow:0 7px 18px #0003}
@@ -77,6 +78,16 @@ textarea{min-height:75px;resize:vertical}
     <h2>🎉 Promoções</h2>
     <p>Tem promoção no Sushi Gastro Morretes toda <b>segunda-feira</b> e <b>quarta-feira</b>! Confira a imagem e aproveite nossas ofertas especiais.</p>
     <img src="https://i.postimg.cc/FRZ9Ds9s/promocoes.jpg" alt="Promoções do Sushi Gastro Morretes" loading="lazy">
+    <div class="promo-orders">
+      <h3>🍣 Peça suas ofertas promocionais</h3>
+      <p>Pedidos promocionais disponíveis somente às segundas e quartas-feiras.</p>
+      <div class="promo-status" id="promoStatus" aria-live="polite"></div>
+      <div class="promo-grid" id="promoGrid">
+        <article class="promo-card" data-promo-card="uramaki"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ63M8hS92SoJbgrAKDDG9GtO7IJ2vSrka1SBmLj1yPQ8TanAEOGr8P8B8&s=10" alt="Foto ilustrativa de uramaki" loading="lazy"><div class="promo-card-info"><h4>Uramaki</h4><p>8 peças</p><span class="promo-price">R$ 20,00</span><button class="add" type="button" data-promo="uramaki">＋ Adicionar</button></div></article>
+        <article class="promo-card" data-promo-card="niguiri"><img src="https://cdn.shopify.com/s/files/1/0587/8487/4575/files/2e2c8d59-fd6a-4a22-9548-e236c1e20356.png?v=1757014445" alt="Foto ilustrativa de niguiri de salmão" loading="lazy"><div class="promo-card-info"><h4>Niguiri de salmão</h4><p>5 peças</p><span class="promo-price">R$ 20,00</span><button class="add" type="button" data-promo="niguiri">＋ Adicionar</button></div></article>
+        <article class="promo-card" data-promo-card="hot"><img src="https://djapa.com.br/wp-content/uploads/2022/05/hot-roll-vegetariano.jpg" alt="Foto ilustrativa de hot roll" loading="lazy"><div class="promo-card-info"><h4>Hot Holls</h4><p>8 peças</p><span class="promo-price">R$ 20,00</span><button class="add" type="button" data-promo="hot">＋ Adicionar</button></div></article>
+      </div>
+    </div>
   </section>
   <section class="cart-layout" id="pedido">
     <div class="panel">
@@ -181,6 +192,22 @@ catalog.forEach(([category,items])=>{
  });
  section.appendChild(grid);menu.appendChild(section);
 });
+function promoDayAvailable(){const day=new Date().getDay();return day===1||day===3;}
+function updatePromoAvailability(){
+ const available=promoDayAvailable();
+ const status=document.getElementById('promoStatus');
+ status.textContent=available?'🟢 Promoções disponíveis hoje! Adicione os itens ao carrinho.':'🔒 Pedidos promocionais indisponíveis hoje. As ofertas abrem novamente na próxima segunda ou quarta-feira.';
+ document.querySelectorAll('[data-promo]').forEach(button=>{button.disabled=!available;button.textContent=available?'＋ Adicionar':'Indisponível';});
+ document.querySelectorAll('[data-promo-card]').forEach(card=>card.classList.toggle('promo-closed',!available));
+}
+document.querySelectorAll('[data-promo]').forEach(button=>button.addEventListener('click',()=>{
+ if(!promoDayAvailable()){updatePromoAvailability();return;}
+ const promos={uramaki:['Promoção Uramaki','8 peças',20.00],niguiri:['Promoção Niguiri de salmão','5 peças',20.00],hot:['Promoção Hot Holls','8 peças',20.00]};
+ const item=promos[button.dataset.promo];
+ if(item)add('PROMO|'+button.dataset.promo,item[0],item[1],item[2],'Promoções');
+}));
+updatePromoAvailability();
+
 function add(key,name,detail,price,category){if(!cart[key])cart[key]={name,detail,price,category,qty:0};cart[key].qty++;renderCart()}
 function change(key,delta){if(!cart[key])return;cart[key].qty+=delta;if(cart[key].qty<=0)delete cart[key];renderCart()}
 function renderCart(){
@@ -203,6 +230,7 @@ document.getElementById('checkout').addEventListener('submit',e=>{
  e.preventDefault();const items=Object.values(cart);if(!items.length){alert('Adicione pelo menos um produto ao carrinho.');return}
  const nome=document.getElementById('nome').value.trim(),telefone=document.getElementById('telefone').value.trim(),endereco=document.getElementById('endereco').value.trim();
  const pagamento=document.querySelector('input[name="pagamento"]:checked')?.value;if(!pagamento){alert('Selecione a forma de pagamento.');return}
+ if(items.some(i=>i.category==='Promoções')&&!promoDayAvailable()){alert('As promoções só podem ser pedidas às segundas e quartas-feiras. Remova os itens promocionais do carrinho para continuar.');return}
  const subtotal=items.reduce((s,i)=>s+i.price*i.qty,0);
  let msg='🍣 *PEDIDO - SUSHI GASTRO MORRETES*\\n\\n';
  msg+='*Cliente:* '+nome+'\\n*Telefone:* '+telefone+'\\n*Endereço:* '+endereco+'\\n\\n*ITENS DO PEDIDO*\\n';
